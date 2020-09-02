@@ -26,7 +26,7 @@ Fc = 70; % 载波频率
 % fc_side = (randi([0,100],1) - 5)*0.001;  %载波偏移
 fc_side = 0;
 fc_shift = Fc + fc_side;
-rb = [0.1,1,10]; % 符号速率,1, 0.1
+rb = 10; % 符号速率,1, 0.1
 
 sps = Fs/rb;
 fc_fm = 8; % 20和70是等效Lsamp的

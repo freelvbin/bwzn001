@@ -2,8 +2,8 @@
 % b1循环码、b2卷积码、b3汉明码、b4 Turbo、b5 LDPC、b6 TPC等；
 % a1霍夫曼、a2算术、a3 L-Z、a4 ADPCM、a5 MPEG-2、a6 H.264、a7 H.265、a8 G.711、a9 G.721、a10 G.723
 clear;clc;
-base_pathr = 'D:\LBWork\BWZN\XHFX\信源编码\';
-base_pathw = 'D:\LBWork\BWZN\XHFX\信道编码\';
+% base_pathr = 'D:\LBWork\BWZN\XHFX\信源编码\';
+% base_pathw = 'D:\LBWork\BWZN\XHFX\信道编码\';
 
 length_channel_ar(1,:) = [64, 128, 192];
 length_channel_ar(2,:) = [72, 144, 72];
@@ -11,13 +11,20 @@ length_channel_ar(3,:) = [11, 11, 11];
 length_channel_ar(4,:) = [64, 64, 64];
 length_channel_ar(5,:) = [16200, 21600, 25900];
 length_channel_ar(6,:) = [231, 180, 180];
-
-pkt_num_channel_ar(1,:)= [400, 200, 128]; %b1循环码
-pkt_num_channel_ar(2,:)= [384, 192, 96];   % b2卷积码
-pkt_num_channel_ar(3,:)= [2560, 2624, 2688]; % b3汉明码
-pkt_num_channel_ar(4,:)= [400, 400, 400]; %b4 Turbo
+%1st pack number
+% pkt_num_channel_ar(1,:)= [400, 200, 128]; %b1循环码
+% pkt_num_channel_ar(2,:)= [384, 192, 96];   % b2卷积码
+% pkt_num_channel_ar(3,:)= [2560, 2624, 2688]; % b3汉明码
+% pkt_num_channel_ar(4,:)= [400, 400, 400]; %b4 Turbo
+% pkt_num_channel_ar(5,:)= [1, 1, 1]; % b5 LDPC
+% pkt_num_channel_ar(6,:)= [128, 144, 160];      % b6 TPC
+%2st pack number
+pkt_num_channel_ar(1,:)= [16, 12, 8]; %b1循环码
+pkt_num_channel_ar(2,:)= [16, 12, 8];   % b2卷积码
+pkt_num_channel_ar(3,:)= [64, 96, 128]; % b3汉明码
+pkt_num_channel_ar(4,:)= [8, 12, 16]; %b4 Turbo
 pkt_num_channel_ar(5,:)= [1, 1, 1]; % b5 LDPC
-pkt_num_channel_ar(6,:)= [128, 144, 160];      % b6 TPC
+pkt_num_channel_ar(6,:)= [8, 16, 12];      % b6 TPC
 
 %组合方式
 joint_type(1,1,:,:) = [1,1,2,3; 1,1,3,3; 1,1,4,3];
@@ -43,9 +50,25 @@ joint_type(5,3,:,:) = [5,2,5,1; 5,2,6,1;  5,2,2,1];
 
 joint_type(6,1,:,:) = [6,1,8,3;  6,1,9,3;  6,1,10,3];
 joint_type(6,2,:,:) = [6,2,11,2; 6,2,12,2; 6,2,13,2];
-joint_type(6,3,:,:) = [6,3,14,1; 6,3,5,1;  6,3,6,1];
+joint_type%1st pack number
+pkt_num_channel_ar(1,:)= [400, 200, 128]; %b1循环码
+pkt_num_channel_ar(2,:)= [384, 192, 96];   % b2卷积码
+pkt_num_channel_ar(3,:)= [2560, 2624, 2688]; % b3汉明码
+pkt_num_channel_ar(4,:)= [400, 400, 400]; %b4 Turbo
+pkt_num_channel_ar(5,:)= [1, 1, 1]; % b5 LDPC
+pkt_num_channel_ar(6,:)= [128, 144, 160];      % b6 TPC
+(6,3,:,:) = [6,3,14,1; 6,3,5,1;  6,3,6,1];
 
-joint_type(7,1,:,:) = [7,3,9,3; 7,3,10,3; 7,3,11,3];
+joint_type(7,1,:,:) = [7,3,9,3; 7,3,10,3; 7,3,1
+    
+
+
+
+
+
+
+
+1,3];
 joint_type(7,2,:,:) = [7,4,12,2; 7,4,13,2; 7,4,14,2];
 joint_type(7,3,:,:) = [7,5,5,1; 7,5,6,1; 7,5,7,1];
 
