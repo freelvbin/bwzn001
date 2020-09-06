@@ -1,5 +1,4 @@
 %%
-%%
 clear;
 close all;
 %% 参数初始化
@@ -96,9 +95,10 @@ for m = 1: 10 %source code
             fc_side = (randi([0,100],1) - 5)*0.001;  %载波偏移
 
             Mod_Method_num = joint_type(m,n,c,3);
-%             Mod_Method_num = k;
+            Mod_Method_num = 2;
             mod_type = Mod_Array{Mod_Method_num};
             speed_ratetype = joint_type(m,n,c,4);
+            speed_ratetype = 3;
             fprintf('调制类型是： %d ：%s\n',Mod_Method_num,mod_type );
             fprintf('速率类型是： %d\n',speed_ratetype );
             fprintf('m是：%d, n是：%d, c是：%d\n',m,n,c);
