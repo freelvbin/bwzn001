@@ -25,7 +25,7 @@ switch Mod_Method
         fdev = Belt_f*fm_fm/max(abs(AnalogSig_fm)); % 频率偏移常数Kf
         msg_mod = fmmod(AnalogSig_fm,fc_fm,fs,fdev);
     case '2FSK'
-        freq_sep =0.5* rb; % FSK频率间隔
+        freq_sep = rb; % FSK频率间隔
         msg_mod = fskmod(sourcedata,2,freq_sep,sps,fs,'discont');%
     case 'MSK'
         msg_mod = mskmod(sourcedata,sps,[],pi/2);

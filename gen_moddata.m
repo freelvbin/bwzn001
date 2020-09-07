@@ -8,10 +8,10 @@ close all;
 Mod_Array = {'FM','2FSK','GMSK','BPSK','DQPSK','QPSK','OQPSK','8PSK','16QAM','32QAM','64QAM','256QAM','16APSK','32APSK'};
 mod_type = 'QPSK'; % ismember(Mod_Array(1),'FMd')
 
-ChannelEncode_Array = {'CRC' ,'Conv' ,'Hamming', 'Turbo','LDPC', 'TPC'};
+ChEnc_Arr = {'CRC' ,'Conv' ,'Hamming', 'Turbo','LDPC', 'TPC'};
 ChEncType = 'CRC';
 
-ScEncFileName = {'huffman_2th.dat', 'ac_2th.dat', 'lz_2th.dat'};
+ScEnc_Arr = {'huffman', 'arithmetic', 'lz', 'ADPCM', 'MPEG2', 'H264', 'H265', 'G711', 'G721', 'G723'};
 SrEncType = 'None';
 
 select_Funchannelencode = 1; % 是否执行信道编码函数
@@ -84,26 +84,24 @@ hQuant=quantizer('nearest',[16 15]);% 量化器，对应16位ADC
 fprintf('**** 开始调制数据生成：\n');
 tic
 for m = 1: 10 %source code
-%     name_datafile_r =Filename_a1(m);
     srccode_type =  m;
-    fprintf('信源编码类型是： %d\n',srccode_type);
-    for n = 3:3 % channel code type IDx
+    fprintf('信源编码类型是： %d, %s\n',srccode_type, ScEnc_Arr{m});
+    for n = 1:3 % 每个信源对应三类信道
         chcode_type  = joint_type(m,n,1,2);
-        filename_chcode = [folder_name_ch , 'a' , num2str(m) , '_b' , num2str(n),'.dat'];
-        fprintf('信道编码类型是： %d\n',chcode_type);
-        for c = 1:3 % 3 mode type    
+        filename_SrEnc_ChEnc =  ScEnc_Arr{m} + "_"+ ChEnc_Arr{chcode_type} + ".dat";
+        filename_chcode = folder_name_ch + filename_SrEnc_ChEnc;
+        fprintf('信道编码类型是： %d, %s\n',chcode_type, ChEnc_Arr{chcode_type});
+        for c = 1:3 % 每一类信道又对应三类调制方式  
             fc_side = (randi([0,100],1) - 5)*0.001;  %载波偏移
-
             Mod_Method_num = joint_type(m,n,c,3);
-            Mod_Method_num = 2;
             mod_type = Mod_Array{Mod_Method_num};
             speed_ratetype = joint_type(m,n,c,4);
-            speed_ratetype = 3;
             fprintf('调制类型是： %d ：%s\n',Mod_Method_num,mod_type );
             fprintf('速率类型是： %d\n',speed_ratetype );
             fprintf('m是：%d, n是：%d, c是：%d\n',m,n,c);
             
-            filenamew = ['a' , num2str(m) , '_b' , num2str(n), '_c' , num2str(c) , '_'];
+%             filenamew = ['a' , num2str(m) , '_b' , num2str(n), '_c' , num2str(c) , '_'];
+            filenamew = [ScEnc_Arr{m} , '_' ,ChEnc_Arr{chcode_type}, '_' , mod_type , '_N', '_' ];
             sps = Fs/rb(speed_ratetype);
         
             %% 各种调制后的文件名生成
@@ -111,7 +109,7 @@ for m = 1: 10 %source code
             filename_moded = [folder_namew,filenamew,file_basename_0, '_mod.dat'];
             filename_data_before_mod = [folder_namew,filenamew, file_basename_0, '_beforemod.dat']; %调制前的数据
             
-            fid_filename_beforemod = fopen(filename_data_before_mod, 'w');
+%             fid_filename_beforemod = fopen(filename_data_before_mod, 'w');
             fid_filename_moded = fopen(filename_moded, 'w');
              %调制数据生成           
             file_chcode =  fopen(filename_chcode, 'r');
@@ -155,7 +153,7 @@ for m = 1: 10 %source code
             
             fclose(file_chcode);
             fclose(fid_filename_moded);
-            fclose(fid_filename_beforemod);
+%             fclose(fid_filename_beforemod);
             fprintf('%d MB调制数据文件生成结束\n',PA_FILE_LENGTH/1e6);
             fprintf('-----------------------------------------------------------------------------\n');
         end
