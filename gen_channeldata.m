@@ -67,8 +67,11 @@ joint_type(10,1,:,:) = [10,5,12,3; 10,5,13,3; 10,5,14,3];
 joint_type(10,2,:,:) = [10,6,2,2;  10,6,3,2;  10,6,4,2];
 joint_type(10,3,:,:) = [10,1,5,1;  10,1,6,1;  10,1,7,1];
 
-ChannelEncode_Array = {'CRC' ,'Conv' ,'Hamming', 'Turbo','LDPC', 'TPC'};
+ChEnc_Arr = {'CRC' ,'Conv' ,'Hamming', 'Turbo','LDPC', 'TPC'};
 ChEncType = 'CRC';
+ScEnc_Arr = {'huffman', 'arithmetic', 'lz', 'ADPCM', 'MPEG2', 'H264', 'H265', 'G711', 'G721', 'G723'};
+SrEncType = 'None';
+
 select_Funchannelencode = 1; % 是否执行信道编码函数
 sync_header = [0 1 0 0 0 0 1 0];  % 同步头 0x42
 readlength = (25900*2)*8; % 文件每次读取的长度
@@ -88,20 +91,27 @@ for m = 1: 10 %source code
         length_frame_ch = length_channel_ar(joint_type(m,n,1,2),id_b1_childtype);
         
         Fun_Ch_datain_length = floor(readlength/(length_frame_ch * pkt_num_channel)) * (length_frame_ch * pkt_num_channel); % 每次送入信道编码的数据长度，需为包长度的整数倍
-        name_datafile_r = [ 'a' , num2str(m), '_2th',  '.dat'];
-        name_datafile_w = [ 'a' , num2str(m), '_', 'b', num2str(n), '.dat'];
-        fprintf('file load: %s\n',name_datafile_r)
+
+%         filename_SrEnc = [ 'a' , num2str(m), '_2th',  '.dat'];
+%         filename_ChanEnc = [ 'a' , num2str(m), '_', 'b', num2str(n), '.dat'];
+
+        filename_SrEnc = ScEnc_Arr{m} + "_2th"+ ".dat";
+        chcode_type  = joint_type(m,n,1,2);
+        filename_ChanEnc = ScEnc_Arr{m} +  "_"+ ChEnc_Arr{chcode_type} +  '.dat';
+         
         
-        file_namer = folder_name_2th + name_datafile_r;
-        file_namew = folder_namew + name_datafile_w;
+        fprintf('file load: %s\n',filename_SrEnc)
+        
+        file_namer = folder_name_2th + filename_SrEnc;
+        file_namew = folder_namew + filename_ChanEnc;
         
         file_source =  fopen(file_namer, 'r');
         file_channel =  fopen(file_namew, 'w');
-        ChEncType = ChannelEncode_Array{1,joint_type(m,n,1,2)};
+        ChEncType = ChEnc_Arr{1,joint_type(m,n,1,2)};
         
 
         fprintf('Start: m is %d, n is %d\n',m,n)% disp(['eee',num2str(a)])
-        fprintf('信源编码类型  is %d\n',m)% disp(['eee',num2str(a)])
+        fprintf('信源编码类型  is %d: %s\n',m,ScEnc_Arr{m})% disp(['eee',num2str(a)])
         fprintf('信道编码类型  is %s\n',ChEncType)% disp(['eee',num2str(a)])
         fprintf('信道编码对应的每一包的帧数量  is %d\n',pkt_num_channel)% disp(['eee',num2str(a)])
         fprintf('信道编码包中的帧长度  is %d\n',length_frame_ch)% disp(['eee',num2str(a)])

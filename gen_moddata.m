@@ -83,7 +83,7 @@ data_write_length = ceil(PA_FILE_LENGTH/2);
 hQuant=quantizer('nearest',[16 15]);% 量化器，对应16位ADC
 fprintf('**** 开始调制数据生成：\n');
 tic
-for m = 1: 10 %source code
+for m = 4: 10 %source code
     srccode_type =  m;
     fprintf('信源编码类型是： %d, %s\n',srccode_type, ScEnc_Arr{m});
     for n = 1:3 % 每个信源对应三类信道
