@@ -21,9 +21,9 @@ span = 10;       % Filter span
 sourcedata = datain;
 switch Mod_Method
     case 'FM'
-        AnalogSig_fm = RandAnSig(Lsamp,fm_fm,fs); % 产生的信号本身即是幅度归一化的
-        fdev = Belt_f*fm_fm/max(abs(AnalogSig_fm)); % 频率偏移常数Kf
-        msg_mod = fmmod(AnalogSig_fm,fc_fm,fs,fdev);
+%         AnalogSig_fm = RandAnSig(Lsamp,fm_fm,fs); % 产生的信号本身即是幅度归一化的
+        fdev = Belt_f*fm_fm/max(abs(datain)); % 频率偏移常数Kf
+        msg_mod = fmmod(datain,fc_fm,fs,fdev);
     case '2FSK'
         freq_sep = rb; % FSK频率间隔
         msg_mod = fskmod(sourcedata,2,freq_sep,sps,fs,'discont');%
@@ -90,6 +90,7 @@ end
 if (strcmp(Mod_Method,'AM')||strcmp(Mod_Method,'DSB')||strcmp(Mod_Method,'SSB')||strcmp(Mod_Method,'FM')...
         ||strcmp(Mod_Method,'CW')||strcmp(Mod_Method,'FM-FM')) == 1
     msg_mod_carrier = msg_mod_shape; % MSK
+    PhaseOut = 0;
 else
     msg_mod_carrier = msg_mod_shape.*exp(1j*(2*pi*(fc)*(1:length(msg_mod_shape))/fs + PhaseIn))';
     PhaseOut = 2*pi* fc*length(msg_mod_shape)/fs;
