@@ -1,4 +1,4 @@
-%%
+%%%
 clear;
 close all;
 %% 参数初始化
