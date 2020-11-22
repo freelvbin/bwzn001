@@ -11,14 +11,7 @@ length_channel_ar(3,:) = [11, 11, 11];
 length_channel_ar(4,:) = [64, 64, 64];
 length_channel_ar(5,:) = [16200, 21600, 25900];
 length_channel_ar(6,:) = [231, 180, 180];
-%1st pack number
-% pkt_num_channel_ar(1,:)= [400, 200, 128]; %b1循环码
-% pkt_num_channel_ar(2,:)= [384, 192, 96];   % b2卷积码
-% pkt_num_channel_ar(3,:)= [2560, 2624, 2688]; % b3汉明码
-% pkt_num_channel_ar(4,:)= [400, 400, 400]; %b4 Turbo
-% pkt_num_channel_ar(5,:)= [1, 1, 1]; % b5 LDPC
-% pkt_num_channel_ar(6,:)= [128, 144, 160];      % b6 TPC
-%2st pack number
+%pack number
 pkt_num_channel_ar(1,:)= [16, 12, 8]; %b1循环码
 pkt_num_channel_ar(2,:)= [16, 12, 8];   % b2卷积码
 pkt_num_channel_ar(3,:)= [64, 96, 128]; % b3汉明码
@@ -26,9 +19,16 @@ pkt_num_channel_ar(4,:)= [8, 12, 16]; %b4 Turbo
 pkt_num_channel_ar(5,:)= [1, 1, 1]; % b5 LDPC
 pkt_num_channel_ar(6,:)= [8, 16, 12];      % b6 TPC
 
-joint_type(1,1,:,:) = [1,1,2,3; 1,1,3,3; 1,1,4,3];
+joint_type(1,1,:,:) = [1,1,2,3; 1,1,3,3; 1,1,4,3]; % 信源，信道，调制，速度
 joint_type(1,2,:,:) = [1,2,5,2; 1,2,6,2; 1,2,7,2];
 joint_type(1,3,:,:) = [1,3,2,1; 1,3,3,1; 1,3,4,1];
+% joint_type(1,4,:,:) = [1,10,2,3; 1,10,3,3; 1,10,4,3]; % 信源，信道，调制，速度
+% joint_type(1,5,:,:) = [1,100,2,3; 1,100,3,3; 1,1000,4,3]; % 信源，信道，调制，速度
+% joint_type(1,6,:,:) = [1,20,5,2; 1,20,6,2; 1,20,7,2];
+% joint_type(1,7,:,:) = [1,200,5,2; 1,200,6,2; 1,2000,7,2];
+% joint_type(1,8,:,:) = [1,30,2,1; 1,30,3,1; 1,30,4,1];
+% joint_type(1,9,:,:) = [1,300,2,1; 1,300,3,1; 1,3000,4,1];
+
 
 joint_type(2,1,:,:) = [2,1,5,3; 2,1,6,3; 2,1,7,3];
 joint_type(2,2,:,:) = [2,2,2,2; 2,2,3,2; 2,2,4,2];
@@ -66,10 +66,19 @@ joint_type(9,3,:,:) = [9,4,4,1;  9,4,5,1;  9,4,6,1];
 joint_type(10,1,:,:) = [10,5,12,3; 10,5,13,3; 10,5,14,3];
 joint_type(10,2,:,:) = [10,6,2,2;  10,6,3,2;  10,6,4,2];
 joint_type(10,3,:,:) = [10,1,5,1;  10,1,6,1;  10,1,7,1];
+for n = 1:10
+    for m = 4:9
+        id = mod(m-1,3)+1;
+        joint_type(n,m,:,:) = joint_type(n,id,:,:);
+        x = floor((m-1)/3);
+        joint_type(n,m,:,2) = joint_type(n,id,:,2) * 10.^(x);
+    end
+end
 
 ChEnc_Arr = {'CRC' ,'Conv' ,'Hamming', 'Turbo','LDPC', 'TPC'};
 ChEncType = 'CRC';
-ScEnc_Arr = {'huffman', 'arithmetic', 'lz', 'ADPCM', 'MPEG2', 'H264', 'H265', 'G711', 'G721', 'G723'};
+% ScEnc_Arr = {'huffman', 'arithmetic', 'lz', 'ADPCM', 'MPEG2', 'H264', 'H265', 'G711', 'G721', 'G723'};
+ScEnc_Arr = {'PN65536', 'PN65536', 'PN65536', 'PN65536', 'PN65536', 'PN65536', 'PN65536', 'PN65536', 'PN65536', 'PN65536'};
 SrEncType = 'None';
 
 select_Funchannelencode = 1; % 是否执行信道编码函数
