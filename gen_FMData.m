@@ -23,7 +23,7 @@ fc_side = (randi([0,100],1) - 5)*0.001;  %载波偏移
 % fc_side = 0;
 fc_shift = Fc + fc_side;
 rb = 0.1; % 符号速率,1,2,3
-fc_fm = 8; % 20和70是等效Lsamp的
+fc_fm = 10; % 20和70是等效Lsamp的
 Lsamp = Fs*1e6*run_time;  % 样点数
 
 Nfft = 65536;   % 各种谱图FFT的点数
