@@ -29,7 +29,7 @@ Lsamp = Fs*1e6*run_time;  % 样点数
 
 Nfft = 65536;   % 各种谱图FFT的点数
 datalength_fun_SigGen = 65536;% 调制函数每一次调制的数据长度
-SNR = 15;
+SNR = 45;
 %% 联合调制参数
 
 %组合方式
@@ -83,11 +83,12 @@ data_write_length = ceil(PA_FILE_LENGTH/2);
 hQuant=quantizer('nearest',[16 15]);% 量化器，对应16位ADC
 fprintf('**** 开始调制数据生成：\n');
 tic
-for m = 4: 10 %source code
+for m = 1: 10 %source code
     srccode_type =  m;
     fprintf('信源编码类型是： %d, %s\n',srccode_type, ScEnc_Arr{m});
     for n = 1:3 % 每个信源对应三类信道
         chcode_type  = joint_type(m,n,1,2);
+%         chcode_type = 6;
         filename_SrEnc_ChEnc =  ScEnc_Arr{m} + "_"+ ChEnc_Arr{chcode_type} + ".dat";
         filename_chcode = folder_name_ch + filename_SrEnc_ChEnc;
         fprintf('信道编码类型是： %d, %s\n',chcode_type, ChEnc_Arr{chcode_type});
@@ -95,67 +96,72 @@ for m = 4: 10 %source code
             fc_side = (randi([0,100],1) - 5)*0.001;  %载波偏移
             Mod_Method_num = joint_type(m,n,c,3);
             mod_type = Mod_Array{Mod_Method_num};
-            speed_ratetype = joint_type(m,n,c,4);
-            fprintf('调制类型是： %d ：%s\n',Mod_Method_num,mod_type );
-            fprintf('速率类型是： %d\n',speed_ratetype );
-            fprintf('m是：%d, n是：%d, c是：%d\n',m,n,c);
-            
-%             filenamew = ['a' , num2str(m) , '_b' , num2str(n), '_c' , num2str(c) , '_'];
-            filenamew = [ScEnc_Arr{m} , '_' ,ChEnc_Arr{chcode_type}, '_' , mod_type , '_N', '_' ];
-            sps = Fs/rb(speed_ratetype);
-        
-            %% 各种调制后的文件名生成
-            file_basename_0 = [num2str((Fc+fc_side)*1000),'_',num2str(rb(speed_ratetype)*1000),'_',num2str(SNR)];
-            filename_moded = [folder_namew,filenamew,file_basename_0, '_mod.dat'];
-            filename_data_before_mod = [folder_namew,filenamew, file_basename_0, '_beforemod.dat']; %调制前的数据
-            
-%             fid_filename_beforemod = fopen(filename_data_before_mod, 'w');
-            fid_filename_moded = fopen(filename_moded, 'w');
-             %调制数据生成           
-            file_chcode =  fopen(filename_chcode, 'r');
-            fprintf('打开信道编码数据文件： %s\n',filename_chcode);
-            fprintf('写入调制数据文件： %s\n',filename_moded);
-            if (speed_ratetype == 1)
-                file_readlength0 = 2e4;
-            elseif (speed_ratetype == 2)
-                file_readlength0 = 2e5;
-            else
-                file_readlength0 = 2e6;
-            end
-            
-            if(mod_type== "8PSK")
-                file_readlength = file_readlength0*3 ;
-            else
-                file_readlength = file_readlength0;
-            end
-            
-            count = file_readlength;
-            PhaseIn = 0;
-            m1 = 0;
-            cnt_data_write_length = 0;
-            while (count == file_readlength && (cnt_data_write_length <= data_write_length))
-                [SourceData, count] = fread(file_chcode, file_readlength,'*ubit1','ieee-be');
-              
-                SourceData = double(SourceData);
-                Lsamp = count;
-                [msg_detect_float,PhaseOut]  = fun_SigGen(SourceData, mod_type, rb(speed_ratetype), (Fc+fc_side), fc_fm, Fs, Lsamp, SNR, PhaseIn);
-                if(cnt_data_write_length == 0)
-                    fprintf('调制后数据与调制前数据倍数：%d \n',length(msg_detect_float)/length(SourceData)); 
+            mod_type = '256QAM'; 
+%             if( mod_type == "16APSK" ||mod_type == "32APSK"||mod_type == "16QAM"||mod_type == "64QAM"||mod_type == "256QAM")
+            if(mod_type == "64QAM"||mod_type == "256QAM")                
+                speed_ratetype = joint_type(m,n,c,4);
+                speed_ratetype = 3;
+                fprintf('调制类型是： %d ：%s\n',Mod_Method_num,mod_type );
+                fprintf('速率类型是： %d\n',speed_ratetype );
+                fprintf('m是：%d, n是：%d, c是：%d\n',m,n,c);
+
+    %             filenamew = ['a' , num2str(m) , '_b' , num2str(n), '_c' , num2str(c) , '_'];
+                filenamew = [ScEnc_Arr{m} , '_' ,ChEnc_Arr{chcode_type}, '_' , mod_type , '_N', '_' ];
+                sps = Fs/rb(speed_ratetype);
+
+                %% 各种调制后的文件名生成
+                file_basename_0 = [num2str((Fc+fc_side)*1000),'_',num2str(rb(speed_ratetype)*1000),'_',num2str(SNR)];
+                filename_moded = [folder_namew,filenamew,file_basename_0, '_mod.dat'];
+                filename_data_before_mod = [folder_namew,filenamew, file_basename_0, '_beforemod.dat']; %调制前的数据
+
+    %             fid_filename_beforemod = fopen(filename_data_before_mod, 'w');
+                fid_filename_moded = fopen(filename_moded, 'w');
+                 %调制数据生成           
+                file_chcode =  fopen(filename_chcode, 'r');
+                fprintf('打开信道编码数据文件： %s\n',filename_chcode);
+                fprintf('写入调制数据文件： %s\n',filename_moded);
+                if (speed_ratetype == 1)
+                    file_readlength0 = 2e4;
+                elseif (speed_ratetype == 2)
+                    file_readlength0 = 2e5;
+                else
+                    file_readlength0 = 2e6;
                 end
-                PhaseIn = PhaseOut;
-                len_modded = length(msg_detect_float);
-                msg_detect = quantize(hQuant,msg_detect_float)*2^15;
-                fwrite(fid_filename_moded, msg_detect,'int16'); 
-                cnt_data_write_length = cnt_data_write_length + length(msg_detect);
-                m1 = m1 + 1;
-                
+
+                if(mod_type== "8PSK" || mod_type == "64QAM")
+                    file_readlength = file_readlength0*3 ;
+                else
+                    file_readlength = file_readlength0;
+                end
+
+                count = file_readlength;
+                PhaseIn = 0;
+                m1 = 0;
+                cnt_data_write_length = 0;
+                while (count == file_readlength && (cnt_data_write_length <= data_write_length))
+                    [SourceData, count] = fread(file_chcode, file_readlength,'*ubit1','ieee-be');
+
+                    SourceData = double(SourceData);
+                    Lsamp = count;
+                    [msg_detect_float,PhaseOut]  = fun_SigGen(SourceData, mod_type, rb(speed_ratetype), (Fc+fc_side), fc_fm, Fs, Lsamp, SNR, PhaseIn);
+                    if(cnt_data_write_length == 0)
+                        fprintf('调制后数据与调制前数据倍数：%d \n',length(msg_detect_float)/length(SourceData)); 
+                    end
+                    PhaseIn = PhaseOut;
+                    len_modded = length(msg_detect_float);
+                    msg_detect = quantize(hQuant,msg_detect_float)*2^15;
+                    fwrite(fid_filename_moded, msg_detect,'int16'); 
+                    cnt_data_write_length = cnt_data_write_length + length(msg_detect);
+                    m1 = m1 + 1;
+
+                end
+
+                fclose(file_chcode);
+                fclose(fid_filename_moded);
+    %             fclose(fid_filename_beforemod);
+                fprintf('%d MB调制数据文件生成结束\n',PA_FILE_LENGTH/1e6);
+                fprintf('-----------------------------------------------------------------------------\n');
             end
-            
-            fclose(file_chcode);
-            fclose(fid_filename_moded);
-%             fclose(fid_filename_beforemod);
-            fprintf('%d MB调制数据文件生成结束\n',PA_FILE_LENGTH/1e6);
-            fprintf('-----------------------------------------------------------------------------\n');
         end
        
     end
